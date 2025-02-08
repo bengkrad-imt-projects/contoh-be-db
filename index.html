@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Contoh Backend & Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Dokumentasi Contoh Backend & Database</h1>
+    <p>Dokumentasi ini berisi panduan mengenai struktur dan cara kerja backend menggunakan Flask serta database menggunakan PostgreSQL dalam proyek contoh ini. Proyek ini dibuat untuk memberikan gambaran bagaimana backend dan database saling berinteraksi serta bagaimana data disimpan dan dikelola. Kalian dapat menjadikan dokumentasi ini sebagai referensi dalam mengembangkan proyek kalian dengan teknologi yang sama. Bagian di bawah berikut ini berisi informasi tentang bagaimana menjalankan proyek, cara kerja aplikasi dari sisi backend dan database, bagian-bagian penting dalam kode, serta kebutuhan komunikasi antar tim.</p>
+    <h2>1. Cara Menjalankan Proyek</h2>
+    <h3>Mengunduh Repository</h3>
+    <ol>
+        <li>Clone repository dari GitHub dengan perintah:</li>
+        <pre><code>git clone https://github.com/bengkrad-imt-projects/contoh-be-db.git</code></pre>
+        <li>Masuk ke direktori proyek:</li>
+        <pre><code>cd contoh-be-db</code></pre>
+    </ol>
+    <h3>Backend</h3>
+    <ol>
+        <li>Pastikan Python sudah terinstall di komputer.</li>
+        <li>Masuk ke direktori proyek dan aktifkan virtual environment:</li>
+        <pre><code>source venv/bin/activate  # Untuk Mac/Linux
+venv\Scripts\activate  # Untuk Windows</code></pre>
+        <li>Install dependensi dengan:</li>
+        <pre><code>pip install -r requirements.txt</code></pre>
+        <li>Jalankan backend dengan:</li>
+        <pre><code>python run.py</code></pre>
+    </ol>
+    
+    <h3>Database</h3>
+    <ol>
+        <li>Pastikan PostgreSQL sudah terinstall di komputer.</li>
+        <li>Buat database baru di PostgreSQL dengan nama <code>schedule_db</code>.</li>
+        <li>Import file SQL dari repo ke database dengan perintah:</li>
+        <pre><code>psql -U prak -d schedule_db -f database/schedule_db.sql</code></pre>
+        <li>Pastikan database sudah berjalan sebelum menjalankan backend.</li>
+    </ol>
+    
+    <h2>2. Bagaimana Aplikasi Bekerja</h2>
+    <p>Ketika aplikasi frontend melakukan request, backend Flask akan menerima request tersebut melalui <code>routes.py</code>. Data kemudian akan diproses oleh <code>schedule_utils.py</code> yang berkomunikasi dengan database PostgreSQL menggunakan SQLAlchemy.</p>
+    <p>Secara umum, alurnya:</p>
+    <ul>
+        <li>Frontend mengirim request ke Flask API.</li>
+        <li>Flask memproses request dan memanggil fungsi di <code>schedule_utils.py</code>.</li>
+        <li>Fungsi ini akan melakukan operasi CRUD ke database melalui SQLAlchemy.</li>
+        <li>Data dari database dikembalikan dalam format JSON.</li>
+    </ul>
+    <p>Ketika aplikasi backend dijalankan, maka:</p>
+    <ul>
+        <li>Flask akan memulai server di <code>http://0.0.0.0:3005</code>.</li>
+        <li>Endpoint utama untuk API adalah sebagai berikut:</li>
+        <ul>
+            <li><code>GET /selected-schedule</code> → Mengambil data jadwal dari database.</li>
+            <li><code>POST /selected-schedule</code> → Memperbarui data jadwal di database.</li>
+            <li><code>PATCH /toggle-time</code> → Mengubah status ketersediaan waktu tertentu.</li>
+            <li><code>PATCH /batch-update</code> → Melakukan pembaruan jadwal secara massal.</li>
+        </ul>
+        <li>Flask akan berkomunikasi dengan PostgreSQL melalui SQLAlchemy.</li>
+        <li>Data akan disimpan dalam tabel <code>schedule</code> di database <code>schedule_db</code>.</li>
+    </ul>
+    <h2>3. Bagian Penting dalam Repo</h2>
+    <ul>
+        <li><strong><code>app/routes.py</code></strong>: Mengelola rute API.</li>
+        <li><strong><code>app/models.py</code></strong>: Struktur tabel database.</li>
+        <li><strong><code>app/schedule_utils.py</code></strong>: Logika bisnis aplikasi.</li>
+        <li><strong><code>database/</code></strong>: Berisi file SQL untuk inisialisasi database.</li>
+    </ul>
+    
+    <h2>4. Kebutuhan Antar Tim & Diskusi</h2>
+    <h3>Backend ⇄ Frontend</h3>
+    <p>Backend membutuhkan request yang jelas dari frontend dan mengembalikan response dalam format JSON yang bisa dipahami frontend.</p>
+    <h4>Contoh Request</h4>
+    <pre><code>{"day": "Senin", "time_range": "08:00 - 10:00", "availability": 1}</code></pre>
+    <h4>Contoh Response</h4>
+    <pre><code>{"message": "Schedule updated successfully"}</code></pre>
+    
+    <h3>Backend ⇄ Database</h3>
+    <p>Backend mengelola data di PostgreSQL melalui SQLAlchemy. Pastikan skema tabel di <code>models.py</code> sudah sesuai dengan kebutuhan.</p>
+    <h4>Contoh Query</h4>
+    <pre><code>SELECT * FROM schedule WHERE day = 'Senin';</code></pre>
+    
+    <p>Gunakan dokumentasi ini sebagai acuan dalam membangun dan mengelola backend serta database untuk proyek kalian. Jangan ragu untuk berdiskusi dengan tim lain jika ada kebutuhan khusus terkait integrasi atau pengolahan data.
+    </p>
+</div>
+</body>
+</html>
